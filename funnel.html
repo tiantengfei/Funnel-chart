@@ -1,0 +1,85 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
+   <script src="https://code.highcharts.com/highcharts.js"></script>
+    <!--
+    <script src="https://code.highcharts.com/modules/funnel.js"></script>
+    -->
+    <script src="funnel.src.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+
+    <script type="text/javascript">
+        $(function () {
+
+            $('#container').highcharts({
+                chart: {
+                    type: 'funnel',
+                    marginRight: 200
+                },
+                title: {
+                    text: 'websites funnel',
+                    x: -50
+                },
+                plotOptions: {
+                    series: {
+                        dataLabels: {
+                            enabled: true,
+                            format: '<b>{point.name}</b> ({point.y})',
+                            color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black',
+                            softConnector: true
+
+                        },
+                        neckWidth: '20%',
+                        neckHeight: '0%',
+                        dataLength: '5',
+
+                        //-- Other available options
+                        // height: pixels or percent
+                         width:'60%'
+                    }
+                },
+                legend: {
+                    enabled: false
+                },
+                //正式使用时，由服务器端发送数据
+                series: [{
+                    name: 'all users',
+                    data: [
+
+                        ['url1', 10000],
+                        ['url2', 4000],
+                        ['url3', 3000],
+                        ['url4', 2000],
+                        ['url5', 1200],
+                        ['url6', 600],
+                        ['转化率', '40%'],
+                        ['转化率', '75%'],
+                        ['转化率', "%66"],
+                        ['转化率', "60%" ],
+                        ['转化率', "60%" ]
+
+
+                    ]
+                }
+                ]
+
+            });
+
+
+
+        });
+
+
+
+
+    </script>
+    <title></title>
+
+</head>
+<body>
+<div id="container" style="min-width: 410px; max-width: 1000px; height: 400px; margin: 0 auto"></div>
+
+</body>
+</html>
