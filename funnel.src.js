@@ -92,6 +92,7 @@ seriesTypes.funnel = Highcharts.extendClass(seriesTypes.pie, {
 			path,
 			fraction,
 			half = options.dataLabels.position === 'left' ? 1 : 0,
+		//dataLength. we make changes
 			dataLength = options.dataLength,
 
 			x1, 
@@ -102,7 +103,7 @@ seriesTypes.funnel = Highcharts.extendClass(seriesTypes.pie, {
 			x4, 
 			y5;
 
-		alert("dataLength:" + dataLength);
+		//alert("dataLength:" + dataLength);
 		// Return the width at a specific y coordinate
 		series.getWidthAt = getWidthAt = function (y) {
 			var top = (centerY - height / 2);
@@ -143,9 +144,10 @@ seriesTypes.funnel = Highcharts.extendClass(seriesTypes.pie, {
 
 		// get the total sum
 		each(data, function (point, i) {
-			if(i < dataLength)
+			if( i <= dataLength && i > 0)
 			if (!ignoreHiddenPoint || point.visible !== false) {
-				sum += point.y;
+				sum += data[i - 1].y - point.y;  //we change the method to get the total sum
+				//alert("sum:" + data[i - 1].y);
 			}
 		});
 
@@ -153,7 +155,9 @@ seriesTypes.funnel = Highcharts.extendClass(seriesTypes.pie, {
 			if(j < dataLength) {
 				// set start and end positions
 				y5 = null;
-				fraction = sum ? point.y / sum : 0;
+
+				// we change the method the compute the fraction
+				fraction = sum ? (point.y - data[j + 1].y)  / sum : 0;
 				y1 = centerY - height / 2 + cumulative * height;
 				y3 = y1 + fraction * height;
 				//tempWidth = neckWidth + (width - neckWidth) * ((height - neckHeight - y1) / (height - neckHeight));
@@ -201,8 +205,9 @@ seriesTypes.funnel = Highcharts.extendClass(seriesTypes.pie, {
 				// prepare for using shared dr
 				point.shapeType = 'path';
 				point.shapeArgs = {d: path};
-				point.path = path;
 
+				//We add extra attributes in order to compute the data label pos.
+				point.path = path;
 				point.y1= y1;
 				point.y3=y3;
 				point.y5=y5;
@@ -286,6 +291,7 @@ seriesTypes.funnel = Highcharts.extendClass(seriesTypes.pie, {
 	/**
 	 * Extend the pie data label method
 	 */
+		// We do many changes in drawDataLabel function.
 	drawDataLabels: function () {
 		var data = this.data,
 			labelDistance = this.options.dataLabels.distance,
@@ -297,6 +303,7 @@ seriesTypes.funnel = Highcharts.extendClass(seriesTypes.pie, {
 			y;
 
 		var series = this,
+		//dataLength is set by us.
 			dataLength = series.options.dataLength;
 		//alert("while:"+ dataLength);
 		// In the original pie label anticollision logic, the slots are distributed
@@ -305,10 +312,9 @@ seriesTypes.funnel = Highcharts.extendClass(seriesTypes.pie, {
 		this.center[2] -= 2 * labelDistance;
 		// Set the label position array for each point.
 
-		i = dataLength;
-		//alert("i=" + i);
-		var s = 5;
 
+
+		i = dataLength;
 		while (i--) {
 			point = data[i];
 			leftSide = point.half;
@@ -331,33 +337,7 @@ seriesTypes.funnel = Highcharts.extendClass(seriesTypes.pie, {
 		}
 
 
-		/**
-
-		data[dataLength].shapeArgs= data[dataLength - 1].shapeArgs;
-		data[dataLength].shapeType = data[dataLength - 1].shapeType;
-		data[dataLength].percentage = data[dataLength - 1].percentage;
-		data[dataLength].plotX = data[dataLength - 1].plotX;
-		data[dataLength].slice = data[dataLength - 1].slice;
-		data[dataLength].plotY = data[dataLength - 1].y3 || data[dataLength - 1].y5;
-		data[dataLength].half = data[dataLength - 1].half;
-
-
-
-		leftSide = data[dataLength].half;
-		sign = leftSide ? 1 : -1;
-		y = data[dataLength].plotY;
-		x = this.getX(y, leftSide);
-		data[dataLength].labelPos = [
-			0, // first break of connector
-			y, // a/a
-			x + (labelDistance - 5) * sign, // second break, right outside point shape
-			y, // a/a
-			x + labelDistance * sign, // landing point for connector
-			y, // a/a
-			leftSide ? 'right' : 'left', // alignment
-			0 // center angle
-		];
-**/
+		// We add the code below which add  the labels conversion rate in the funnel chart.
 		var j ;
 		for(var k = dataLength, index = 0; k < data.length; k++,index++) {
 

@@ -11,6 +11,11 @@
     <script src="https://code.highcharts.com/modules/exporting.js"></script>
 
     <script type="text/javascript">
+
+        //use the highchart to draw the funnel.
+        // We modify the funnel.src.js in the highchart in order to fit into our project.
+        //We comment on where we make changes.
+        // You can learn more in the funnel.src.js in the directory.
         $(function () {
 
             $('#container').highcharts({
@@ -21,6 +26,9 @@
                 title: {
                     text: 'websites funnel',
                     x: -50
+                },
+                tooltip: {
+                    enabled: false
                 },
                 plotOptions: {
                     series: {
@@ -33,7 +41,9 @@
                         },
                         neckWidth: '20%',
                         neckHeight: '0%',
-                        dataLength: '5',
+                        dataLength: '5', // the amount of urls among the input
+                                        //this attr is added by us,
+                                        // which is not exist in the original highchart.
 
                         //-- Other available options
                         // height: pixels or percent
@@ -43,10 +53,10 @@
                 legend: {
                     enabled: false
                 },
-                //正式使用时，由服务器端发送数据
+                //data from the server
                 series: [{
                     name: 'all users',
-                    data: [
+                    data: [    // in practice, we need set data to the data from the server, not the fixed data.
 
                         ['url1', 10000],
                         ['url2', 4000],
@@ -65,7 +75,7 @@
                 }
                 ]
 
-            });
+            }).tooltip.hide();
 
 
 
